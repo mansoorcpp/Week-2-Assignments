@@ -39,88 +39,88 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-let Map = {};
-function RandomIDGen(){
-  let opt = true;
-  let temp = Object.keys(Map);
-  let RandomID;
-  while(opt){
-    RandomID = Math.floor(Math.random() * 1000000) + 1;
-    if(!temp.includes(RandomID)){
-      opt = false;
+  let Map = {};
+  function RandomIDGen(){
+    let opt = true;
+    let temp = Object.keys(Map);
+    let RandomID;
+    while(opt){
+      RandomID = Math.floor(Math.random() * 1000000) + 1;
+      if(!temp.includes(RandomID)){
+        opt = false;
+      }
     }
+    return RandomID;
   }
-  return RandomID;
-}
-
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs').promises;
-
-
-const app = express();
-//const port = 3000; 
-//app.listen(port,() => {console.log("Listening on port 3000")});
-
-
-app.use(bodyParser.json());
-
-
-
-
-app.get("/todos", (req,res) => {
-  let ret = Object.values(Map);
-  res.status(200).json(ret);
-})
-
-app.get("/todos/:id", (req,res) => {
-  let id = req.params.id;
-  let imp = Object.keys(Map)
-  if(imp.includes(id)){
-    res.status(200).json(Map[id]);
-  }
-  else{
-    res.sendStatus(404);
-  }
-})
-
-app.post("/todos",(req,res) => {
-  let l = RandomIDGen();
-  Map[l] = req.body
-  Map[l].id = l;
-  let obj = {
-    id : l
-  }
-  res.status(201).send(obj);
-})
-
-app.put("/todos/:id", (req,res) => {
-  let id = req.params.id;
-  let imp = Object.keys(Map);
-  let body = req.body;
-  if(imp.includes(id)){
-    body.id = id;
-    Map[id] = body;
-    res.sendStatus(200);
-  }
-  else{
-    res.sendStatus(404);
-  }
-})
-
-app.delete("/todos/:id", (req,res) => {
-  let id = req.params.id;
-  let imp = Object.keys(Map);
-  if(imp.includes(id)){
-    delete Map[id];
-    res.sendStatus(200);
-  }else{
-    res.sendStatus(404);
-  }
-})
-
-app.use((req,res,next) => {
-  req.status(404);
-})
-
-module.exports = app;
+  
+  const express = require('express');
+  const bodyParser = require('body-parser');
+  const fs = require('fs').promises;
+  
+  
+  const app = express();
+  //const port = 3000; 
+  //app.listen(port,() => {console.log("Listening on port 3000")});
+  
+  
+  app.use(bodyParser.json());
+  
+  
+  
+  
+  app.get("/todos", (req,res) => {
+    let ret = Object.values(Map);
+    res.status(200).json(ret);
+  })
+  
+  app.get("/todos/:id", (req,res) => {
+    let id = req.params.id;
+    let imp = Object.keys(Map)
+    if(imp.includes(id)){
+      res.status(200).json(Map[id]);
+    }
+    else{
+      res.sendStatus(404);
+    }
+  })
+  
+  app.post("/todos",(req,res) => {
+    let l = RandomIDGen();
+    Map[l] = req.body
+    Map[l].id = l;
+    let obj = {
+      id : l
+    }
+    res.status(201).send(obj);
+  })
+  
+  app.put("/todos/:id", (req,res) => {
+    let id = req.params.id;
+    let imp = Object.keys(Map);
+    let body = req.body;
+    if(imp.includes(id)){
+      body.id = id;
+      Map[id] = body;
+      res.sendStatus(200);
+    }
+    else{
+      res.sendStatus(404);
+    }
+  })
+  
+  app.delete("/todos/:id", (req,res) => {
+    let id = req.params.id;
+    let imp = Object.keys(Map);
+    if(imp.includes(id)){
+      delete Map[id];
+      res.sendStatus(200);
+    }else{
+      res.sendStatus(404);
+    }
+  })
+  
+  app.use((req,res,next) => {
+    req.status(404);
+  })
+  
+  module.exports = app;
