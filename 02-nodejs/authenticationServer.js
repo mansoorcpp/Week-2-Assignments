@@ -29,9 +29,70 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
-const PORT = 3000;
-const app = express();
-// write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
 
-module.exports = app;
+  const express = require("express")
+  const PORT = 3000;
+  const app = express();
+  // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+  let Map = {};
+  app.use(express.json())
+  app.post("/signup",(req,res) => {
+    let body = req.body;
+    if(Object.keys(Map).includes(body.email)){
+      res.status(400).send("Username Already exists")
+    }
+    else{
+      Map[body.email] = body
+      res.status(201).send("Signup successful")
+    }
+  })
+  
+  app.post("/login",(req,res) => {
+    let body = req.body
+    if(Object.keys(Map).includes(body.email)){
+      if(body.password == Map[body.email].password){
+        let userFound = {
+        firstName: Map[body.email].firstName,
+        lastName: Map[body.email].lastName,
+        email: Map[body.email].email
+        }
+        res.json(userFound)
+        }
+        else{
+          res.status(401)
+        }
+      }
+      else{
+        res.status(401)
+      }
+  })
+  
+  app.get("/data",(req,res) => {
+    let headers = req.headers
+    userFound = null;
+    if(Object.keys(Map).includes(headers.email) && Map[headers.email].password === headers.password){
+      userFound = true
+    }else{
+      res.sendStatus(401)
+    }
+  
+    if(userFound){
+      let retObj = []
+      for(key of Object.keys(Map)){
+        retObj.push({
+          firstName: Map[key].firstName,
+          lastName: Map[key].lastName,
+          email: Map[key].email})
+        }
+      res.json({users: retObj})
+    }else{
+  
+    }
+  }
+  )
+  
+  app.use((req,res,next) => {
+    res.status(404)
+  })
+  module.exports = app;
+  
